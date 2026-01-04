@@ -126,7 +126,7 @@ internal static class SaveSlotsManager {
             SlotName = Slot.Name; // Name 当然也要同步修改
             ClearState();
         }
-        Dictionary = new Dictionary<string, SaveSlot>();
+        Dictionary = [];
 
         MoreSaveSlotsUI.Snapshot.ClearAll();
 
@@ -136,14 +136,16 @@ internal static class SaveSlotsManager {
         }
     }
 
-    private static void ClearStateWhenSwitchScene(On.Monocle.Scene.orig_Begin orig, Scene self) {
+    private static void HandleSwitchScene(On.Monocle.Scene.orig_Begin orig, Scene self) {
         orig(self);
         SaveSlot current = Slot;
         WaitUntilThreadSafe();
         foreach (SaveSlot slot in SaveSlots) {
             Slot = slot;
             SlotName = Slot.Name;
-            slot.StateManager.ClearStateWhenSwitchSceneImpl(self);
+            slot.StateManager.HandleSwitchScene(self);
+            slot.StateManager.preCloneTask?.Wait();
+            // 因为涉及到存档槽切换, 干脆等一等
         }
         Slot = current;
         SlotName = current.Name;
@@ -183,19 +185,19 @@ internal static class SaveSlotsManager {
         }
     }
     internal static void AfterAssetReload() {
-        Dictionary = new Dictionary<string, SaveSlot>();
+        Dictionary = [];
         SwitchSlot(1);
         ClearState();
     }
 
     [Load]
     private static void Load() {
-        On.Monocle.Scene.Begin += ClearStateWhenSwitchScene;
+        On.Monocle.Scene.Begin += HandleSwitchScene;
     }
 
     [Unload]
     private static void Unload() {
-        On.Monocle.Scene.Begin -= ClearStateWhenSwitchScene;
+        On.Monocle.Scene.Begin -= HandleSwitchScene;
     }
 
     #region Tas

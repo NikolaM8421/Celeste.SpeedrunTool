@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Celeste.Mod.SpeedrunTool.Extensions;
 
 internal static class AttributeUtils {
-    private static readonly object[] Parameterless = { };
+    private static readonly object[] Parameterless = [];
     private static readonly IDictionary<Type, IEnumerable<MethodInfo>> MethodInfos = new Dictionary<Type, IEnumerable<MethodInfo>>();
 
     public static void CollectMethods<T>() where T : Attribute {

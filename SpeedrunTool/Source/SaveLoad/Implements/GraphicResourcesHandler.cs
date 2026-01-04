@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Celeste.Mod.SpeedrunTool.SaveLoad.Utils;
+namespace Celeste.Mod.SpeedrunTool.SaveLoad;
 internal static class GraphicResourcesHandler {
 
     public static void Add(VirtualAsset asset) {
@@ -39,7 +39,7 @@ internal static class GraphicResourcesHandler {
         }
         internal static void ReloadVirtualAssets() {
             SaveLoadAction.InternalSafeAdd(
-                loadState: static (_, _) => {
+                loadState: static (_, level) => {
                     List<VirtualAsset> list = new List<VirtualAsset>(VirtualAssets);
                     // if load too frequently and switching between different slots, then collection might be modified? idk
                     // so we avoid the crash in this way
@@ -60,6 +60,14 @@ internal static class GraphicResourcesHandler {
                     }
 
                     VirtualAssets.Clear();
+
+                    if (level.Tracker.GetEntity<TrailManager>() is { } trailManager) {
+                        for (int i = 0; i < trailManager.buffers.Length; i++) {
+                            if (trailManager.buffers[i] != null && trailManager.buffers[i].IsDisposed) {
+                                trailManager.buffers[i].Reload();
+                            }
+                        }
+                    }
                 },
                 clearState: VirtualAssets.Clear,
                 preCloneEntities: VirtualAssets.Clear

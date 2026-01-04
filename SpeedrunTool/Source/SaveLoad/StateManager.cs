@@ -1,7 +1,6 @@
 using Celeste.Mod.SpeedrunTool.Message;
 using Celeste.Mod.SpeedrunTool.ModInterop;
 using Celeste.Mod.SpeedrunTool.Other;
-using Celeste.Mod.SpeedrunTool.SaveLoad.Utils;
 using Celeste.Mod.SpeedrunTool.Utils;
 using Force.DeepCloner;
 using Force.DeepCloner.Helpers;
@@ -22,17 +21,13 @@ public sealed class StateManager {
     public static StateManager Instance => SaveSlotsManager.StateManagerInstance;
     internal StateManager() { }
 
-    private static readonly Lazy<PropertyInfo> InGameOverworldHelperIsOpen = new(
-        () => ModUtils.GetType("CollabUtils2", "Celeste.Mod.CollabUtils2.UI.InGameOverworldHelper")?.GetPropertyInfo("IsOpen")
-    );
+    private readonly Dictionary<VirtualInput, bool> lastChecks = [];
 
-    private readonly Dictionary<VirtualInput, bool> lastChecks = new();
-
-    private static List<VirtualInput> unfreezeInputs = new();
+    private static List<VirtualInput> unfreezeInputs = [];
 
     private static void Input_OnInitialize() {
         // 每次重置游戏键位后, 这些 VirtualInput 都是新的对象, 因此必须重新获取
-        unfreezeInputs = new List<VirtualInput>() { Input.Dash, Input.Jump, Input.Grab, Input.MoveX, Input.MoveY, Input.Dash, Input.Aim, Input.Pause, Input.CrouchDash };
+        unfreezeInputs = [Input.Dash, Input.Jump, Input.Grab, Input.MoveX, Input.MoveY, Input.Dash, Input.Aim, Input.Pause, Input.CrouchDash];
         Instance?.lastChecks?.Clear();
     }
 
@@ -64,7 +59,7 @@ public sealed class StateManager {
         Load
     }
 
-    private readonly HashSet<EventInstance> playingEventInstances = new();
+    private readonly HashSet<EventInstance> playingEventInstances = [];
 
     #region Hook
 
@@ -73,8 +68,8 @@ public sealed class StateManager {
         On.Monocle.Scene.BeforeUpdate += MakeGameFreezeAfterSaveLoad;
         On.Celeste.Level.Update += UpdateBackdropWhenWaiting;
         On.Celeste.PlayerDeadBody.End += AutoLoadStateWhenDeath;
-        IL.Celeste.Level.TransitionRoutine += LevelOnTransitionRoutine;
-        On.Celeste.Level.TransitionRoutine += LevelOnTransitionRoutine;
+        IL.Celeste.Level.TransitionRoutine += IL_LevelTransitionRoutine;
+        On.Celeste.Level.TransitionRoutine += On_LevelTransitionRoutine;
         On.Celeste.Level.End += LevelOnEnd;
         SaveLoadAction.InternalSafeAdd(
             (_, _) => Instance.UpdateLastChecks(),
@@ -88,12 +83,12 @@ public sealed class StateManager {
         On.Monocle.Scene.BeforeUpdate -= MakeGameFreezeAfterSaveLoad;
         On.Celeste.Level.Update -= UpdateBackdropWhenWaiting;
         On.Celeste.PlayerDeadBody.End -= AutoLoadStateWhenDeath;
-        IL.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
-        On.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
+        IL.Celeste.Level.TransitionRoutine -= IL_LevelTransitionRoutine;
+        On.Celeste.Level.TransitionRoutine -= On_LevelTransitionRoutine;
         On.Celeste.Level.End -= LevelOnEnd;
         Everest.Events.Input.OnInitialize -= Input_OnInitialize;
     }
-    private static void LevelOnTransitionRoutine(ILContext context) {
+    private static void IL_LevelTransitionRoutine(ILContext context) {
         ILCursor cursor = new(context);
         if (cursor.TryGotoNext(MoveType.After, ins => ins.OpCode == OpCodes.Newobj && ins.Operand.ToString().Contains("Level/<TransitionRoutine>"))) {
             cursor.EmitDelegate(SaveTransitionRoutine);
@@ -105,7 +100,7 @@ public sealed class StateManager {
         return enumerator;
     }
 
-    private static IEnumerator LevelOnTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+    private static IEnumerator On_LevelTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
         IEnumerator enumerator = orig(self, next, direction);
         while (enumerator.MoveNext()) {
             yield return enumerator.Current;
@@ -174,21 +169,31 @@ public sealed class StateManager {
         orig(level);
     }
 
-    internal void ClearStateWhenSwitchSceneImpl(Scene self) {
-        if (IsSaved) {
-            if (self is Overworld && !SavedByTas && InGameOverworldHelperIsOpen.Value?.GetValue(null) as bool? != true) {
+    private static readonly Lazy<PropertyInfo> InGameOverworldHelperIsOpen = new(
+        () => ModUtils.GetType("CollabUtils2", "Celeste.Mod.CollabUtils2.UI.InGameOverworldHelper")?.GetPropertyInfo("IsOpen")
+    );
+
+    internal void HandleSwitchScene(Scene self) {
+        if (!IsSaved) {
+            return;
+        }
+
+        if (ModSettings.AutoClearStateOnSceneSwitch) {
+            if (self is Overworld) {
+                if (!SavedByTas && InGameOverworldHelperIsOpen.Value?.GetValue(null) as bool? != true) {
+                    ClearStateImpl(hasGc: true);
+                }
+            }
+            else if (self.GetSession() is { } session && session.Area != savedLevel.Session.Area) {
                 ClearStateImpl(hasGc: true);
             }
+        }
 
-            // 重启章节 Level 实例变更，所以之前预克隆的实体作废，需要重新克隆
-            if (self is Level) {
-                State = State.None;
-                PreCloneSavedEntities();
-            }
-
-            if (self.GetSession() is { } session && session.Area != savedLevel.Session.Area) {
-                ClearStateImpl(hasGc: true);
-            }
+        // 重启章节 Level 实例变更，所以之前预克隆的实体作废，需要重新克隆
+        // 因为 preClone 期间若字段为 Level, 并且 Engine.Scene 也确实是 level, 则会直接把字段设为 level
+        if (self is Level) {
+            State = State.None;
+            PreCloneSavedEntities();
         }
     }
 

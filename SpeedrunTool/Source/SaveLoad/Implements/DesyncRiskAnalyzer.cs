@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 
-namespace Celeste.Mod.SpeedrunTool.SaveLoad.Utils;
+namespace Celeste.Mod.SpeedrunTool.SaveLoad;
 
 public static class ExternalSafeOracle {
     // each oracle returns if it thinks it's safe

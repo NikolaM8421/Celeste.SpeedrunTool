@@ -15,5 +15,11 @@ internal static class Config {
     // Profile
     public const bool JetBrains_Profiling = false;
     public const bool InGame_Profiling = true;
+
+
+    [Load]
+    private static void Load() {
+        Logger.Warn("SpeedrunTool/DebugTool", "This is a debug build!");
+    }
 }
 #endif

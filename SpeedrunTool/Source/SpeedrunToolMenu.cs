@@ -119,6 +119,10 @@ public static class SpeedrunToolMenu {
                 .Change(b =>
                     ModSettings.AutoClearStateOnScreenTransition = b));
 
+            subMenu.Add(new TextMenu.OnOff(Dialog.Clean(DialogIds.AutoClearStateOnSceneSwitch), ModSettings.AutoClearStateOnSceneSwitch)
+                .Change(b =>
+                    ModSettings.AutoClearStateOnSceneSwitch = b));
+
             subMenu.Add(new EnumerableSliderCompact<FreezeAfterLoadStateType>(Dialog.Clean(DialogIds.FreezeAfterLoadState),
                 CreateEnumerableOptions<FreezeAfterLoadStateType>(),
                 ModSettings.FreezeAfterLoadStateType).Change(b =>

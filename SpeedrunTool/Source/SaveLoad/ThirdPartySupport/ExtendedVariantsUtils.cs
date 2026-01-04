@@ -7,23 +7,32 @@ using System.Reflection;
 namespace Celeste.Mod.SpeedrunTool.SaveLoad.ThirdPartySupport;
 internal static class ExtendedVariantsUtils {
 
+    [Initialize]
+    private static void VersionCheck() {
+        if (ModUtils.GetModule("ExtendedVariantMode") is not EverestModule extVarModule) {
+            return;
+        }
+        if (extVarModule.Metadata.Version < new Version(0, 47, 0)) {
+            throw new Exception("Please Update ExtendedVariantMode!");
+        }
+    }
+
     internal static void Support() {
         // 静态字段在 InitExtendedVariantsFields() 中处理了
-
         if (ModUtils.GetType("ExtendedVariantMode", "ExtendedVariants.Module.ExtendedVariantsModule") is not { } moduleType) {
             return;
         }
 
         // 修复玩家死亡后不会重置设置
         SaveLoadAction.InternalSafeAdd((savedValues, _) => {
-            if (Everest.Modules.FirstOrDefault(everestModule => everestModule.Metadata?.Name == "ExtendedVariantMode") is { } module &&
+            if (ModUtils.GetModule("ExtendedVariantMode") is { } module &&
                 module.GetFieldValue("TriggerManager") is { } triggerManager) {
                 savedValues[moduleType] = new Dictionary<string, object> { { "TriggerManager", triggerManager.DeepCloneShared() } };
             }
         }, (savedValues, _) => {
             if (savedValues.TryGetValue(moduleType, out Dictionary<string, object> dictionary) &&
                 dictionary.TryGetValue("TriggerManager", out object savedTriggerManager) &&
-                Everest.Modules.FirstOrDefault(everestModule => everestModule.Metadata?.Name == "ExtendedVariantMode") is { } module) {
+                ModUtils.GetModule("ExtendedVariantMode") is { } module) {
                 if (module.GetFieldValue("TriggerManager") is { } triggerManager) {
                     savedTriggerManager.DeepCloneToShared(triggerManager);
                 }

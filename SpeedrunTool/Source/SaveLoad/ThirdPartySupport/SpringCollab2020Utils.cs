@@ -1,60 +1,83 @@
 
 using Celeste.Mod.SpeedrunTool.Utils;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.SpeedrunTool.SaveLoad.ThirdPartySupport;
 internal static class SpringCollab2020Utils {
     internal static void Support() {
-        if (ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorController") is { } colorControllerType
-            && colorControllerType.GetFieldInfo("colorControllerType") != null
-            && Delegate.CreateDelegate(typeof(On.Celeste.CrystalStaticSpinner.hook_GetHue),
-                    colorControllerType.GetMethodInfo("getRainbowSpinnerHue")) is
-                On.Celeste.CrystalStaticSpinner.hook_GetHue hookGetHue
-           ) {
-            SaveLoadAction.InternalSafeAdd(
-                loadState: (_, _) => {
-                    if (colorControllerType.GetFieldValue<bool>("rainbowSpinnerHueHooked")) {
-                        On.Celeste.CrystalStaticSpinner.GetHue -= hookGetHue;
-                        On.Celeste.CrystalStaticSpinner.GetHue += hookGetHue;
-                    }
-                    else {
-                        On.Celeste.CrystalStaticSpinner.GetHue -= hookGetHue;
-                    }
-                }
-            );
-        }
+        SaveLoadAction.CloneModTypeFields("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorController",
+            "spinnerControllerOnScreen", "nextSpinnerController", "transitionProgress");
 
-        if (ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorAreaController") is { } colorAreaControllerType
-            && colorAreaControllerType.GetFieldInfo("rainbowSpinnerHueHooked") != null
-            && Delegate.CreateDelegate(typeof(On.Celeste.CrystalStaticSpinner.hook_GetHue),
-                    colorAreaControllerType.GetMethodInfo("getRainbowSpinnerHue")) is
-                On.Celeste.CrystalStaticSpinner.hook_GetHue hookSpinnerGetHue
-           ) {
-            SaveLoadAction.InternalSafeAdd(
-                loadState: (_, _) => {
-                    if (colorAreaControllerType.GetFieldValue<bool>("rainbowSpinnerHueHooked")) {
-                        On.Celeste.CrystalStaticSpinner.GetHue -= hookSpinnerGetHue;
-                        On.Celeste.CrystalStaticSpinner.GetHue += hookSpinnerGetHue;
-                    }
-                    else {
-                        On.Celeste.CrystalStaticSpinner.GetHue -= hookSpinnerGetHue;
-                    }
-                }
-            );
-        }
+        const string key1 = "RainbowSpinnerColorController";
+        const string key2 = "RainbowSpinnerColorAreaController";
+        const string key3 = "SpikeHooked";
+        const string b_hooked1 = "rainbowSpinnerHueHooked";
+        const string b_hooked2 = "rainbowSpinnerHueHooked";
+        const string b_hooked3 = "SpikeHooked";
 
-        if (ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.SpikeJumpThroughController") is { } spikeJumpThroughControllerType
-            && spikeJumpThroughControllerType.GetFieldInfo("SpikeHooked") != null
+        if (   ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorController") is { } type1
+            && type1.GetFieldInfo(b_hooked1) != null
+            && Delegate.CreateDelegate(typeof(On.Celeste.CrystalStaticSpinner.hook_GetHue),
+                    type1.GetMethodInfo("getRainbowSpinnerHue")) is On.Celeste.CrystalStaticSpinner.hook_GetHue hookGetHue
+
+            && ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorAreaController") is { } type2
+            && type2.GetFieldInfo(b_hooked2) != null
+            && Delegate.CreateDelegate(typeof(On.Celeste.CrystalStaticSpinner.hook_GetHue),
+                    type2.GetMethodInfo("getRainbowSpinnerHue")) is On.Celeste.CrystalStaticSpinner.hook_GetHue hookSpinnerGetHue
+
+            && ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.SpikeJumpThroughController") is { } type3
+            && type3.GetFieldInfo(b_hooked3) != null
             && Delegate.CreateDelegate(typeof(On.Celeste.Spikes.hook_OnCollide),
-                spikeJumpThroughControllerType.GetMethodInfo("OnCollideHook")) is On.Celeste.Spikes.hook_OnCollide onCollideHook
+                    type3.GetMethodInfo("OnCollideHook")) is On.Celeste.Spikes.hook_OnCollide onCollideHook
            ) {
+
             SaveLoadAction.InternalSafeAdd(
-                loadState: (_, _) => {
-                    if (spikeJumpThroughControllerType.GetFieldValue<bool>("SpikeHooked")) {
-                        On.Celeste.Spikes.OnCollide -= onCollideHook;
-                        On.Celeste.Spikes.OnCollide += onCollideHook;
+                saveState: (savedValues, _) => {
+                    Dictionary<string, object> dict = new() {
+                        [key1] = type1.GetFieldValue<bool>(b_hooked1),
+                        [key2] = type2.GetFieldValue<bool>(b_hooked2),
+                        [key3] = type3.GetFieldValue<bool>(b_hooked3),
+                    };
+
+                    savedValues[typeof(SpringCollab2020Utils)] = dict;
+                },
+                loadState: (savedValues, _) => {
+                    if (!savedValues.TryGetValue(typeof(SpringCollab2020Utils), out Dictionary<string, object> dict)) {
+                        return;
                     }
-                    else {
-                        On.Celeste.Spikes.OnCollide -= onCollideHook;
+                    if (dict.TryGetValue(key1, out object o1)) {
+                        bool b1 = (bool)o1;
+                        // 我们不检测 type1.GetFieldValue<bool>(b_hooked1) 的值是否与 b1 相同 (不知道为什么, 这个值好像不准)
+                        if (b1) {
+                            On.Celeste.CrystalStaticSpinner.GetHue -= hookGetHue;
+                            On.Celeste.CrystalStaticSpinner.GetHue += hookGetHue;
+                        }
+                        else {
+                            On.Celeste.CrystalStaticSpinner.GetHue -= hookGetHue;
+                        }
+                        type1.SetFieldValue(b_hooked1, b1);
+                    }
+                    if (dict.TryGetValue(key2, out object o2)) {
+                        bool b2 = (bool)o2;
+                        if (b2) {
+                            On.Celeste.CrystalStaticSpinner.GetHue -= hookSpinnerGetHue;
+                            On.Celeste.CrystalStaticSpinner.GetHue += hookSpinnerGetHue;
+                        }
+                        else {
+                            On.Celeste.CrystalStaticSpinner.GetHue -= hookSpinnerGetHue;
+                        }
+                        type2.SetFieldValue(b_hooked2, b2);
+                    }
+                    if (dict.TryGetValue(key3, out object o3)) {
+                        bool b3 = (bool)o3;
+                        if (b3) {
+                            On.Celeste.Spikes.OnCollide -= onCollideHook;
+                            On.Celeste.Spikes.OnCollide += onCollideHook;
+                        }
+                        else {
+                            On.Celeste.Spikes.OnCollide -= onCollideHook;
+                        }
+                        type3.SetFieldValue(b_hooked3, b3);
                     }
                 }
             );

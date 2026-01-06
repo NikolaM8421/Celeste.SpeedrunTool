@@ -24,20 +24,23 @@ internal static class ExtendedVariantsUtils {
         }
 
         // 修复玩家死亡后不会重置设置
-        SaveLoadAction.InternalSafeAdd((savedValues, _) => {
-            if (ModUtils.GetModule("ExtendedVariantMode") is { } module &&
-                module.GetFieldValue("TriggerManager") is { } triggerManager) {
-                savedValues[moduleType] = new Dictionary<string, object> { { "TriggerManager", triggerManager.DeepCloneShared() } };
-            }
-        }, (savedValues, _) => {
-            if (savedValues.TryGetValue(moduleType, out Dictionary<string, object> dictionary) &&
-                dictionary.TryGetValue("TriggerManager", out object savedTriggerManager) &&
-                ModUtils.GetModule("ExtendedVariantMode") is { } module) {
-                if (module.GetFieldValue("TriggerManager") is { } triggerManager) {
-                    savedTriggerManager.DeepCloneToShared(triggerManager);
+        SaveLoadAction.InternalSafeAdd(
+            saveState: (savedValues, _) => {
+                if (ModUtils.GetModule("ExtendedVariantMode") is { } module &&
+                    module.GetFieldValue("TriggerManager") is { } triggerManager) {
+                    savedValues[moduleType] = new Dictionary<string, object> { { "TriggerManager", triggerManager.DeepCloneShared() } };
+                }
+            }, 
+            loadState: (savedValues, _) => {
+                if (savedValues.TryGetValue(moduleType, out Dictionary<string, object> dictionary) &&
+                    dictionary.TryGetValue("TriggerManager", out object savedTriggerManager) &&
+                    ModUtils.GetModule("ExtendedVariantMode") is { } module) {
+                    if (module.GetFieldValue("TriggerManager") is { } triggerManager) {
+                        savedTriggerManager.DeepCloneToShared(triggerManager);
+                    }
                 }
             }
-        });
+        );
 
         if (ModUtils.GetType("ExtendedVariantMode", "ExtendedVariants.Module.ExtendedVariantsSettings") is not { } settingsType) {
             return;
@@ -55,7 +58,7 @@ internal static class ExtendedVariantsUtils {
             ).ToList();
 
         SaveLoadAction.InternalSafeAdd(
-            (savedValues, _) => {
+            saveState: (savedValues, _) => {
                 if (moduleType.GetPropertyValue("Settings") is not { } settingsInstance) {
                     return;
                 }
@@ -67,7 +70,7 @@ internal static class ExtendedVariantsUtils {
 
                 savedValues[settingsType] = dict.DeepCloneShared();
             },
-            (savedValues, _) => {
+            loadState: (savedValues, _) => {
                 // 本来打算将关卡中 ExtendedVariantsTrigger 涉及相关的值强制 SL，想想还是算了
                 if (!ModSettings.SaveExtendedVariants && !StateManager.Instance.SavedByTas) {
                     return;

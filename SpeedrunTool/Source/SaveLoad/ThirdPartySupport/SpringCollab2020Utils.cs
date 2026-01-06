@@ -3,8 +3,6 @@ using Celeste.Mod.SpeedrunTool.Utils;
 
 namespace Celeste.Mod.SpeedrunTool.SaveLoad.ThirdPartySupport;
 internal static class SpringCollab2020Utils {
-
-
     internal static void Support() {
         if (ModUtils.GetType("SpringCollab2020", "Celeste.Mod.SpringCollab2020.Entities.RainbowSpinnerColorController") is { } colorControllerType
             && colorControllerType.GetFieldInfo("colorControllerType") != null

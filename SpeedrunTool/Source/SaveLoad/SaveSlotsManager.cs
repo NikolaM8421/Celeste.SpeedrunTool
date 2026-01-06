@@ -113,8 +113,8 @@ internal static class SaveSlotsManager {
     /// <summary>
     /// Clear current save slot 
     /// </summary>
-    public static void ClearState() {
-        StateManagerInstance.ClearStateImpl(hasGc: true);
+    public static bool ClearState() {
+        return StateManagerInstance.ClearStateImpl(hasGc: true);
     }
 
     public static void ClearAll() {

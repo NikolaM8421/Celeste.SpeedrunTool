@@ -35,12 +35,6 @@ internal static class SpirialisHelperUtils {
                     }
                 }
             );
-
-            action.unloadLevel = (_, entities, entity) => {
-                if (entity.GetType() == timeControllerType) {
-                    entities.Add(entity);
-                }
-            };
         }
 
         if (ModUtils.GetType("SpirialisHelper", "Celeste.Mod.Spirialis.TimeZipMover") is { } timeZipMoverType) {

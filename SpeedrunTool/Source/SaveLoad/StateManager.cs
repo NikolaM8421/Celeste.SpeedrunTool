@@ -178,6 +178,9 @@ public sealed class StateManager {
             return;
         }
 
+        // v3.28 新功能: 切换 Scene 时不再自动删除 SaveState.
+        // 由于我们还保存了 Celeste.SaveData.Instance, 因此我们的多存档甚至可以存储 不同的原版存档文件上的不同章节
+
         if (ModSettings.AutoClearStateOnSceneSwitch) {
             if (self is Overworld) {
                 if (!SavedByTas && InGameOverworldHelperIsOpen.Value?.GetValue(null) as bool? != true) {
@@ -423,43 +426,25 @@ public sealed class StateManager {
         }
     }
 
-    // 释放资源，停止正在播放的声音等
-    private void UnloadLevel(Level level) {
-        List<Entity> entities = new();
+    // 触发 Entity.Removed, 从而释放资源，停止正在播放的声音, 解除 hook 等
+    private static void UnloadLevel(Level level) {
+        List<Entity> entities =
+        [
+            // Player 必须最早移除，不然在处理 player.triggersInside 字段时会产生空指针异常
+            .. level.Tracker.GetEntities<Player>(),
+            .. level.Entities,
+        ];
 
-        // Player 必须最早移除，不然在处理 player.triggersInside 字段时会产生空指针异常
-        entities.AddRange(level.Tracker.GetEntities<Player>());
-
-        // 移除当前房间的实体，照抄 level.UnloadLevel() 方法，不直接调用是因为 BingUI 在该方法中将其存储的 level 设置为了 null
-        AddNonGlobalEntities(level, entities);
-
-        // 恢復主音乐
-        if (level.Tracker.GetEntity<CassetteBlockManager>() is { } cassetteBlockManager) {
-            entities.Add(cassetteBlockManager);
-        }
+        // 等效于 Level.UnloadEntities 然后 UpdateLists
 
         foreach (Entity entity in entities.Distinct()) {
             try {
-                entity.Removed(level);
+                entity.Removed(level); // 触发各式各样的副作用
+                // Scene.TagLists / Scene.Tracker / Engine.Pooler 本身都将被克隆出来, 无需处理. 同理也不用 UpdateLists
             }
             catch (NullReferenceException) {
                 // ignore https://discord.com/channels/403698615446536203/954507384183738438/954507384183738438
             }
-        }
-
-        // 移除剩下声音组件
-        level.Tracker.GetComponentsCopy<SoundSource>().ForEach(component => component.RemoveSelf());
-    }
-
-    private void AddNonGlobalEntities(Level level, List<Entity> entities) {
-        int global = (int)Tags.Global;
-        foreach (Entity entity in level.Entities) {
-            if ((entity.tag & global) == 0) {
-                entities.Add(entity);
-                continue;
-            }
-
-            SaveLoadAction.OnUnloadLevel(level, entities, entity);
         }
     }
 
@@ -541,7 +526,7 @@ public sealed class StateManager {
 
     // 分两步的原因是更早的停止音乐，听起来更舒服更好一点
     // 第一步：停止播放主音乐
-    private void RestoreCassetteBlockManager1(Level level) {
+    private static void RestoreCassetteBlockManager1(Level level) {
         if (level.Tracker.GetEntity<CassetteBlockManager>() is { } manager) {
             manager.snapshot?.start();
         }
@@ -550,7 +535,7 @@ public sealed class StateManager {
     // 第二步：播放节奏音乐
     // https://discord.com/channels/403698615446536203/429775260108324865/1422017531098566776
     // 理论上, 在 Cassette cycle 图中 LoadState 后暂停会引入额外的读图优势, 但这显然不是我们的问题.
-    private void RestoreCassetteBlockManager2(Level level) {
+    private static void RestoreCassetteBlockManager2(Level level) {
         if (level.Tracker.GetEntity<CassetteBlockManager>() is { } manager) {
             if (manager.sfx is { } sfx && !manager.isLevelMusic && manager.leadBeats <= 0) {
                 sfx.start();
@@ -558,7 +543,7 @@ public sealed class StateManager {
         }
     }
 
-    internal void ClearStateImpl(bool hasGc = true) {
+    internal bool ClearStateImpl(bool hasGc = true) {
         // TODO: 这里 Task.Wait() 可能可以试着让它更快结束?
 
         preCloneTask?.Wait();
@@ -591,10 +576,7 @@ public sealed class StateManager {
             Logger.Info("SpeedrunTool/ClearState", $"Clear {FullSlotDescription}");
         }
         SlotDescription = "";
-    }
-
-    public void ClearStateAndShowMessage() {
-        ClearStateImpl(hasGc: true);
+        return doSomething;
     }
 
     private void PreCloneSavedEntities() {

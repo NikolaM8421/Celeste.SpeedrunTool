@@ -230,7 +230,7 @@ public static class DeepClonerUtils {
                 }
                 else if (type.IsIDictionary(out Type dictKeyType, out Type _) && !dictKeyType.IsSimple() &&
                            clonedObj is IDictionary { Count: > 0 } clonedDict) {
-                    backupDict ??= new Dictionary<object, object>();
+                    backupDict ??= [];
                     backupDict.SetRange(clonedDict);
                     clonedDict.Clear();
                     clonedDict.SetRange(backupDict);

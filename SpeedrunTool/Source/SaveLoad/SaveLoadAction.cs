@@ -65,7 +65,6 @@ public sealed class SaveLoadAction {
     private readonly Action preCloneEntities;
     internal readonly SlAction loadState;
     private readonly SlAction saveState;
-    internal Action<Level, List<Entity>, Entity> unloadLevel;
     private int executeOrder;
 
     private static int? contextOrder = null;
@@ -92,18 +91,6 @@ public sealed class SaveLoadAction {
         this.beforeSaveState = beforeSaveState;
         this.beforeLoadState = beforeLoadState;
         this.preCloneEntities = preCloneEntities;
-        needInitializeDictionaryId = true;
-    }
-
-    public SaveLoadAction(SlAction saveState, SlAction loadState, Action clearState,
-        Action<Level> beforeSaveState, Action<Level> beforeLoadState, Action preCloneEntities, Action<Level, List<Entity>, Entity> unloadLevel) {
-        this.saveState = saveState;
-        this.loadState = loadState;
-        this.clearState = clearState;
-        this.beforeSaveState = beforeSaveState;
-        this.beforeLoadState = beforeLoadState;
-        this.preCloneEntities = preCloneEntities;
-        this.unloadLevel = unloadLevel;
         needInitializeDictionaryId = true;
     }
 
@@ -245,12 +232,6 @@ public sealed class SaveLoadAction {
     internal static void OnPreCloneEntities() {
         foreach (SaveLoadAction saveLoadAction in SharedActions) {
             saveLoadAction.preCloneEntities?.Invoke();
-        }
-    }
-
-    internal static void OnUnloadLevel(Level level, List<Entity> entities, Entity entity) {
-        foreach (SaveLoadAction saveLoadAction in SharedActions) {
-            saveLoadAction.unloadLevel?.Invoke(level, entities, entity);
         }
     }
 

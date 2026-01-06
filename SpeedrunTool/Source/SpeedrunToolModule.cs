@@ -34,6 +34,11 @@ public class SpeedrunToolModule : EverestModule {
     public override Type SaveDataType => typeof(SpeedrunToolSaveData);
 
     public override void Load() {
+#if RELEASE
+        string todo = "Boss Desync / ModSupportNotWell (should save whether hook is applied when saving and then when loading update the hook state to right status)";
+        throw new NotImplementedException(todo);
+#endif
+
         SaveSlotsManager.SwitchSlot(1); // i don't want to do a bunch of nullity checks
         StateManager.Load();
         AttributeUtils.Invoke<LoadAttribute>();

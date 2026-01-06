@@ -1,6 +1,6 @@
 namespace Celeste.Mod.SpeedrunTool.SaveLoad.Utils;
 
-internal static class AutoClearState {
+internal static class AutoClearStateOnScreenTrantition {
     [Load]
     private static void Load() {
         On.Celeste.Player.OnTransition += PlayerOnOnTransition;
@@ -19,7 +19,13 @@ internal static class AutoClearState {
             && !StateManager.Instance.SavedByTas
             && self.Scene is Level
            ) {
-            StateManager.Instance.ClearStateAndShowMessage();
+            bool b = SaveSlotsManager.ClearState();
+            // 只清除当前槽位, 不清除所有
+
+            if (b) {
+                Message.PopupMessageUtils.Show("Auto Clear State on Screen Transition", null);
+            }
+
         }
     }
 }

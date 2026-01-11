@@ -17,7 +17,7 @@ namespace Celeste.Mod.SpeedrunTool.Other;
 internal static class Hotkeys_Rebase {
 
     // todo: maintain this set
-    public static readonly HashSet<string> AlwaysSubscribedTextOnInput = new HashSet<string>() { "Celeste.Mod.ImGuiHelper.ImGuiRenderer+<>c", "Celeste.Mod.BingoClient.BingoChat" };
+    public static readonly HashSet<string> AlwaysSubscribedTextOnInput = ["Celeste.Mod.ImGuiHelper.ImGuiRenderer+<>c", "Celeste.Mod.BingoClient.BingoChat"];
 
     private static readonly Lazy<FieldInfo?> f_CelesteNetClientModule_Instance = new(() => ModUtils.GetType("CelesteNet.Client", "Celeste.Mod.CelesteNet.Client.CelesteNetClientModule")?.GetFieldInfo("Instance"));
     private static readonly Lazy<FieldInfo?> f_CelesteNetClientModule_Context = new(() => ModUtils.GetType("CelesteNet.Client", "Celeste.Mod.CelesteNet.Client.CelesteNetClientModule")?.GetFieldInfo("Context"));
@@ -139,7 +139,7 @@ internal static class Hotkeys_Rebase {
 
             Check = keyCheck || buttonCheck;
 
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             if (Pressed) {
                 DoublePressed = now < doublePressTimeout;
                 doublePressTimeout = DoublePressed ? default : now + TimeSpan.FromMilliseconds(DoublePressTimeoutMS);

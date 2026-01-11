@@ -1,3 +1,4 @@
+using Celeste.Mod.SpeedrunTool.Other;
 using Celeste.Mod.SpeedrunTool.Utils;
 using System.Threading.Tasks;
 
@@ -8,17 +9,22 @@ internal static class OnAssetReload {
     private static void Initialize() {
         // after several reloads, multiple same actions are added... yeah but it doesn't matter
 
-        Everest.Events.AssetReload.OnBeforeReload += _ => {
-            SaveSlotsManager.ClearAll();
-        };
-        Everest.Events.AssetReload.OnAfterReload += _ => {
-            SaveSlotsManager.AfterAssetReload();
-        };
+        Everest.Events.AssetReload.OnBeforeReload += BeforeReload;
+
+        Everest.Events.AssetReload.OnAfterReload += AfterReload;
 
         typeof(AssetReloadHelper)
             .GetMethodInfo(nameof(AssetReloadHelper.Do), [typeof(string), typeof(Func<bool, Task>), typeof(bool), typeof(bool)])!
             .ILHook((cursor, _) => {
                 cursor.EmitDelegate(MoreSaveSlotsUI.SnapshotUI.Close);
             });
+    }
+
+    private static void BeforeReload(bool silent) {
+        SaveSlotsManager.ClearAll();
+    }
+
+    private static void AfterReload(bool silent) {
+        SaveSlotsManager.AfterAssetReload();
     }
 }

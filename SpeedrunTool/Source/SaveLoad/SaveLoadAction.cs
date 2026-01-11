@@ -30,7 +30,7 @@ public sealed class SaveLoadAction {
     public static List<EventInstance> ClonedEventInstancesWhenPreClone => SaveSlotsManager.Slot.ClonedEventInstancesWhenPreClone;
 
     // only actions, no values stored. Share among all save slots
-    private static List<SaveLoadAction> SharedActions = new();
+    private static List<SaveLoadAction> SharedActions = [];
 
     // values, belong to each save slot
 

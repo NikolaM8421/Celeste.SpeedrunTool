@@ -5,7 +5,7 @@ namespace Celeste.Mod.SpeedrunTool.SaveLoad;
 internal static class SaveSlotsManager {
     public static IEnumerable<SaveSlot> SaveSlots => Dictionary.Values;
 
-    public static Dictionary<string, SaveSlot> Dictionary = new Dictionary<string, SaveSlot>();
+    public static Dictionary<string, SaveSlot> Dictionary = [];
 
     internal static SaveSlot Slot;
 
@@ -187,7 +187,6 @@ internal static class SaveSlotsManager {
     internal static void AfterAssetReload() {
         Dictionary = [];
         SwitchSlot(1);
-        ClearState();
     }
 
     [Load]

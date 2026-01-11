@@ -441,7 +441,11 @@ public sealed class StateManager {
             try {
                 entity.Removed(level); // 触发各式各样的副作用
                 // Scene.TagLists / Scene.Tracker / Engine.Pooler 本身都将被克隆出来, 大部分情况下无需处理. 同理也不用 UpdateLists
-                // 小部分情况下, Removed 副作用会依赖于 Tracker 等的内部状态 (例如实体带 hook, 只有移除到最后一个才解除 hook)
+                // 但是小部分情况下, Removed 副作用会依赖于 Tracker 等的内部状态 (例如实体带 hook, 只有移除到最后一个才解除 hook)
+                // 所以我们还是做整套流程
+                level.TagLists.EntityRemoved(entity);
+                level.Tracker.EntityRemoved(entity);
+                Engine.Pooler.EntityRemoved(entity);
             }
             catch (NullReferenceException) {
                 // ignore https://discord.com/channels/403698615446536203/954507384183738438/954507384183738438

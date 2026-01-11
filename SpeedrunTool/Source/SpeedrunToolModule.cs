@@ -35,7 +35,12 @@ public class SpeedrunToolModule : EverestModule {
 
     public override void Load() {
 #if RELEASE
-        string todo = "Boss Desync / ModSupportNotWell (should save whether hook is applied when saving and then when loading update the hook state to right status)";
+        string todo = "Boss Desync" +
+            "/ ModSupportNotWell (should save whether hook is applied when saving and then when loading update the hook state to right status)" +
+            "/ speedrun tool 计时器升级优化" +
+            "/ discord @evie feature request" +
+            "/ 此外也测一测 entity removed 到底发挥作用没有, 特别是带 hook 副作用的";
+        
         throw new NotImplementedException(todo);
 #endif
 

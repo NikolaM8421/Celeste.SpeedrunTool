@@ -33,9 +33,9 @@ internal static class DesyncRiskAnalyzer {
 
     private static bool Enabled => !ModSettings.SaveInLuaCutscene;
 
-    private static readonly HashSet<Type> EarlyCheckTypes = [];
+    private static readonly HashSet<Type> EarlyCheckEntityTypes = [];
 
-    private static readonly Dictionary<Type, Func<Entity, bool>> EarlyCheckSpecialHandlers = []; // returns if the entity is actively working
+    private static readonly Dictionary<Type, Func<Level, Type, bool>> EarlyCheckSpecialHandlers = [];
 
     // similar to Force.DeepCloner DeepClonerSafeTypes. Used for late checks
 
@@ -75,20 +75,36 @@ internal static class DesyncRiskAnalyzer {
         }
         RegisterEarlyCheck(
             ModUtils.GetType("LuaCutscenes", "Celeste.Mod.LuaCutscenes.LuaCutsceneEntity"),
-            e => e is CutsceneEntity cs && cs.Running
+            (level, type) => {
+                if (level.InCutscene && level.onCutsceneSkip?.Target?.GetType() == type) {
+                    return true;
+                }
+                if (level.Tracker.GetEntitiesTrackIfNeeded(type) is { } list && list.IsNotNullOrEmpty()) {
+                    // 如果 cs 是 unskippable, 那么可能 Level 并不 InCutscene (而是在结束 Cutscene 的过程中)
+                    foreach (Entity e in list) {
+                        if (!e.GetFieldValue<bool>("Finished")) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        );
+
+        // LuaTalker doesn't uses LuaCutsceneEntity
+        RegisterEarlyCheck(
+            ModUtils.GetType("LuaCutscenes", "Celeste.Mod.LuaCutscenes.LuaTalker"),
+            (level, type) => level.InCutscene && level.onCutsceneSkip?.Target?.GetType() == type
         );
 
         // TODO: support boss helper here
 
-        static void RegisterEarlyCheck(Type type, Func<Entity, bool> func) {
-            if (type is null || !type.IsSubclassOf(typeof(Entity))) {
+        static void RegisterEarlyCheck(Type type, Func<Level, Type, bool> func) {
+            if (type is null || func is null) {
                 return;
             }
             KnownTypes.TryAdd(type, true); // it will be checked in EarlyCheck, so it's always safe in LateCheck
-            EarlyCheckTypes.Add(type);
-            if (func is not null) {
-                EarlyCheckSpecialHandlers[type] = func;
-            }
+            EarlyCheckSpecialHandlers[type] = func;
         }
     }
 
@@ -123,24 +139,17 @@ internal static class DesyncRiskAnalyzer {
     }
 
     private static bool EarlyCheckDesyncRisk(Level level, out string reason) {
-        foreach (Type type in EarlyCheckTypes) {
+        foreach (KeyValuePair<Type, Func<Level, Type, bool>> pair in EarlyCheckSpecialHandlers) {
+            Type type = pair.Key;
+            if (pair.Value(level, type)) {
+                reason = $"Failed to Save: [{type.Name}] may lead to desync!";
+                return true;
+            }
+        }
+        foreach (Type type in EarlyCheckEntityTypes) {
             if (level.Tracker.GetEntitiesTrackIfNeeded(type) is { } list && list.IsNotNullOrEmpty()) {
-                bool has = false;
-                if (EarlyCheckSpecialHandlers.TryGetValue(type, out Func<Entity, bool> handler)) {
-                    foreach (Entity e in list) {
-                        if (handler(e)) {
-                            has = true;
-                            break;
-                        }
-                    }
-                }
-                else {
-                    has = true;
-                }
-                if (has) {
-                    reason = $"Failed to Save: [{type.Name ?? "UnknownEntity"}] may lead to desync!";
-                    return true;
-                }
+                reason = $"Failed to Save: [{type.Name ?? "UnknownEntity"}] may lead to desync!";
+                return true;
             }
         }
         reason = "";
@@ -164,7 +173,7 @@ internal static class DesyncRiskAnalyzer {
             return;
         }
         // it involves lua and we don't know whether it's safe to savestate, so we refuse to savestate
-        EarlyCheckTypes.Add(entityType);
+        EarlyCheckEntityTypes.Add(entityType);
         // mark as safe coz it will be already checked in EarlyCheck
         KnownTypes[entityType] = true;
         desyncReason = entityType;

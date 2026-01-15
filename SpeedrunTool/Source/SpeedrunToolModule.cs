@@ -39,7 +39,12 @@ public class SpeedrunToolModule : EverestModule {
             "/ ModSupportNotWell (should save whether hook is applied when saving and then when loading update the hook state to right status)" +
             "/ speedrun tool 计时器升级优化" +
             "/ discord @evie feature request" +
-            "/ 此外也测一测 entity removed 到底发挥作用没有, 特别是带 hook 副作用的";
+            "/ 此外也测一测 entity removed 到底发挥作用没有, 特别是带 hook 副作用的" +
+            "/ IgnoreSaveLoadComponent 之前的实现应该不支持多存档" +
+            "/ ModInterop 加入 IgnoreSaveLoad/ReturnSameObject(type) 的版本" +
+            "       这里如果 type 是 entity 就处理完 Scene 之后原样返回 (PreClone 阶段), 否则直接原样返回 (KnownType 阶段)" +
+            "/ 引入 Trigger, 使得可以告诉 SRT 哪些关卡是可以安全地存档的 (LuaCutscene 相关). 并在 SRT 发布时告诉 jesss#6307" +
+            "       可能此事也加入 ModInterop ";
         
         throw new NotImplementedException(todo);
 #endif

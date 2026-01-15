@@ -7,6 +7,7 @@ namespace Celeste.Mod.SpeedrunTool.SaveLoad.Utils;
 public class IgnoreSaveLoadComponent : Component {
     private static readonly Dictionary<Entity, bool> IgnoredEntities = new();
 
+    // The Added/Removed method of the entity will not be triggered when based is true
     private bool based;
 
     // backward compatibility

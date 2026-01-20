@@ -41,7 +41,7 @@ public static class RoomTimerManager {
     private static void Load() {
         IL.Celeste.SpeedrunTimerDisplay.Update += SpeedrunTimerDisplayOnUpdate;
         On.Celeste.SpeedrunTimerDisplay.Render += Render;
-        On.Celeste.Level.Update += Timing;
+        Everest.Events.Level.OnAfterUpdate += Timing;
         On.Celeste.SummitCheckpoint.Update += UpdateTimerStateOnTouchFlag;
         On.Celeste.HeartGem.RegisterAsCollected += HeartGemOnRegisterAsCollected;
         On.Celeste.SaveData.RegisterCassette += SaveDataOnRegisterCassette;
@@ -56,7 +56,7 @@ public static class RoomTimerManager {
     private static void Unload() {
         IL.Celeste.SpeedrunTimerDisplay.Update -= SpeedrunTimerDisplayOnUpdate;
         On.Celeste.SpeedrunTimerDisplay.Render -= Render;
-        On.Celeste.Level.Update -= Timing;
+        Everest.Events.Level.OnAfterUpdate -= Timing;
         On.Celeste.SummitCheckpoint.Update -= UpdateTimerStateOnTouchFlag;
         On.Celeste.HeartGem.RegisterAsCollected -= HeartGemOnRegisterAsCollected;
         On.Celeste.SaveData.RegisterCassette -= SaveDataOnRegisterCassette;
@@ -154,9 +154,7 @@ public static class RoomTimerManager {
         }
     }
 
-    private static void Timing(On.Celeste.Level.orig_Update orig, Level self) {
-        orig(self);
-
+    private static void Timing(Level self) {
         string currentRoom = self.Session.Level;
         bool enteringNextRoom = previousRoom != null && previousRoom != currentRoom;
         previousRoom = currentRoom;

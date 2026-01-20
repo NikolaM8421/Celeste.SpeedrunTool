@@ -44,7 +44,8 @@ public class SpeedrunToolModule : EverestModule {
             "/ ModInterop 加入 IgnoreSaveLoad/ReturnSameObject(type) 的版本" +
             "       这里如果 type 是 entity 就处理完 Scene 之后原样返回 (PreClone 阶段), 否则直接原样返回 (KnownType 阶段)" +
             "/ 引入 Trigger, 使得可以告诉 SRT 哪些关卡是可以安全地存档的 (LuaCutscene 相关). 并在 SRT 发布时告诉 jesss#6307" +
-            "       可能此事也加入 ModInterop ";
+            "       可能此事也加入 ModInterop" +
+            "/ 引入 Trigger 或者某种全局实体, 使得可以告诉 SRT 传送的顺序";
         
         throw new NotImplementedException(todo);
 #endif

@@ -7,18 +7,16 @@ namespace Celeste.Mod.SpeedrunTool.Other;
 public static class AllowPauseDuringDeath {
     [Load]
     private static void Load() {
-        On.Celeste.Level.Update += LevelOnUpdate;
+        Everest.Events.Level.OnAfterUpdate += LevelOnUpdate;
         typeof(Level).GetMethodInfo("orig_Pause").ILHook(DisableRetryMenu);
     }
 
     [Unload]
     private static void Unload() {
-        On.Celeste.Level.Update -= LevelOnUpdate;
+        Everest.Events.Level.OnAfterUpdate -= LevelOnUpdate;
     }
 
-    private static void LevelOnUpdate(On.Celeste.Level.orig_Update orig, Level level) {
-        orig(level);
-
+    private static void LevelOnUpdate(Level level) {
         if (!ModSettings.Enabled || !ModSettings.AllowPauseDuringDeath) {
             return;
         }

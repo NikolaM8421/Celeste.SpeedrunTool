@@ -38,7 +38,7 @@ public class SpeedrunToolModule : EverestModule {
         string todo = "Boss Desync" +
             "/ ModSupportNotWell (should save whether hook is applied when saving and then when loading update the hook state to right status)" +
             "/ speedrun tool 计时器升级优化" +
-            "/ discord @evie feature request" +
+            "/ 增加选项使得 AssetReload 后不要清理存档 (有 mapper 需要)" +
             "/ 此外也测一测 entity removed 到底发挥作用没有, 特别是带 hook 副作用的" +
             "/ IgnoreSaveLoadComponent 之前的实现应该不支持多存档" +
             "/ ModInterop 加入 IgnoreSaveLoad/ReturnSameObject(type) 的版本" +

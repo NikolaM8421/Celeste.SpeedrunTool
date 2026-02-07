@@ -135,6 +135,7 @@ SPEEDRUN_TOOL_SAVE_TO_NEXT_SLOT=             存至下一存档槽
 SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT=           读取上一存档槽
 SPEEDRUN_TOOL_SWITCH_TO_NEXT_SLOT=           切换至下一存档槽
 SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT=       切换至上一存档槽
+
 SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI=           开关存读档用户界面
 
 # ================================== Death Statistics ==================================
@@ -159,6 +160,8 @@ SPEEDRUN_TOOL_RESPAWN_SPEED=                       复活速度
 SPEEDRUN_TOOL_RESTART_CHAPTER_SPEED=               重启章节速度
 SPEEDRUN_TOOL_SKIP_RESTART_CHAPTER_SCREEN_WIPE=    跳过重启章节的黑屏动画
 SPEEDRUN_TOOL_ALLOW_PAUSE_DURING_DEATH=            允许死亡时暂停
+SPEEDRUN_TOOL_ALLOW_SAVE_DURING_DEATH=             允许死亡时保存
+# ^ please correct this if it's wrong, i don't speak chinese
 SPEEDRUN_TOOL_MUTE_IN_BACKGROUND=                  游戏后台运行时静音
 SPEEDRUN_TOOL_FIX_CORE_REFILL_DASH_AFTER_TELEPORT= 修正第八章传送后冲刺恢复异常
 SPEEDRUN_TOOL_POPUP_MESSAGE_STYLE=                 提示信息样式

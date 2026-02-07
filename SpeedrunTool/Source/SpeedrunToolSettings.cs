@@ -84,6 +84,7 @@ public class SpeedrunToolSettings : EverestModuleSettings {
     public int RestartChapterSpeed { get; set; } = 1;
     public bool SkipRestartChapterScreenWipe { get; set; } = false;
     public bool AllowPauseDuringDeath { get; set; } = false;
+    public bool AllowSaveDuringDeath { get; set; } = false;
     public bool MuteInBackground { get; set; } = false;
     public bool FixCoreRefillDashAfterTeleport { get; set; } = true;
     public PopupMessageStyle PopupMessageStyle { get; set; } = PopupMessageStyle.Tooltip;
@@ -183,6 +184,7 @@ public class SpeedrunToolSettings : EverestModuleSettings {
     public List<Buttons> ControllerLoadFromLastSlot { get; set; } = new List<Buttons>();
 
     public List<Buttons> ControllerToggleSaveLoadUI { get; set; } = new List<Buttons>();
+
 
 
     #endregion HotkeyConfig

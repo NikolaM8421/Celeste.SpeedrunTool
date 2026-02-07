@@ -217,6 +217,9 @@ public static class SpeedrunToolMenu {
             subMenu.Add(new TextMenu.OnOff(Dialog.Clean(DialogIds.AllowPauseDuringDeath), ModSettings.AllowPauseDuringDeath).Change(b =>
                 ModSettings.AllowPauseDuringDeath = b));
 
+            subMenu.Add(new TextMenu.OnOff(Dialog.Clean(DialogIds.AllowSaveDuringDeath), ModSettings.AllowSaveDuringDeath).Change(b =>
+                ModSettings.AllowSaveDuringDeath = b));
+
             subMenu.Add(
                 new TextMenu.OnOff(Dialog.Clean(DialogIds.MuteInBackground), ModSettings.MuteInBackground).Change(b =>
                     ModSettings.MuteInBackground = b));
@@ -321,6 +324,7 @@ internal class EaseInSubMenu : TextMenuExt.SubMenu {
         if (outline) {
             icon.DrawOutlineCentered(position + justify, color, scale);
         }
+
         else {
             icon.DrawCentered(position + justify, color, scale);
         }

@@ -131,6 +131,7 @@ public static class DialogIds {
     public const string LoadFromLastSlot = "SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT";
     public const string SwitchToNextSlot = "SPEEDRUN_TOOL_SWITCH_TO_NEXT_SLOT";
     public const string SwitchToPreviousSlot = "SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT";
+
     public const string ToggleSaveLoadUI = "SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI";
 
     // Death Statistics
@@ -154,6 +155,7 @@ public static class DialogIds {
     public const string RestartChapterSpeed = "SPEEDRUN_TOOL_RESTART_CHAPTER_SPEED";
     public const string SkipRestartChapterScreenWipe = "SPEEDRUN_TOOL_SKIP_RESTART_CHAPTER_SCREEN_WIPE";
     public const string AllowPauseDuringDeath = "SPEEDRUN_TOOL_ALLOW_PAUSE_DURING_DEATH";
+    public const string AllowSaveDuringDeath = "SPEEDRUN_TOOL_ALLOW_SAVE_DURING_DEATH";
     public const string MuteInBackground = "SPEEDRUN_TOOL_MUTE_IN_BACKGROUND";
     public const string FixCoreRefillDashAfterTeleport = "SPEEDRUN_TOOL_FIX_CORE_REFILL_DASH_AFTER_TELEPORT";
     public const string PopupMessageStyle = "SPEEDRUN_TOOL_POPUP_MESSAGE_STYLE";

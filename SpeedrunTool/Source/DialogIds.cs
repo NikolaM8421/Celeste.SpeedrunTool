@@ -131,7 +131,6 @@ public static class DialogIds {
     public const string LoadFromLastSlot = "SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT";
     public const string SwitchToNextSlot = "SPEEDRUN_TOOL_SWITCH_TO_NEXT_SLOT";
     public const string SwitchToPreviousSlot = "SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT";
-
     public const string ToggleSaveLoadUI = "SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI";
 
     // Death Statistics

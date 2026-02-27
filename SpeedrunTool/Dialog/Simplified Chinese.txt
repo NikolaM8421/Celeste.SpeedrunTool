@@ -54,6 +54,7 @@ SPEEDRUN_TOOL_CLEAR_ALL_TOOLTIP=           清除所有状态
 SPEEDRUN_TOOL_NOT_SAVED_STATE_TOOLTIP=     请先保存状态
 SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD=  存读档后不弹出信息
 SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD_DESCRIPTION=只对 "保存状态", "加载状态" 的快捷键生效
+SPEEDRUN_TOOL_ALLOW_SAVE_DURING_DEATH=     允许死亡时保存
 
 SPEEDRUN_TOOL_CLEAR_STATE_DIALOG=
     [MADELINE left normal]
@@ -135,6 +136,7 @@ SPEEDRUN_TOOL_SAVE_TO_NEXT_SLOT=             存至下一存档槽
 SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT=           读取上一存档槽
 SPEEDRUN_TOOL_SWITCH_TO_NEXT_SLOT=           切换至下一存档槽
 SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT=       切换至上一存档槽
+
 SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI=           开关存读档用户界面
 
 # ================================== Death Statistics ==================================

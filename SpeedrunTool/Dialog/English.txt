@@ -53,6 +53,7 @@ SPEEDRUN_TOOL_CLEAR_ALL_TOOLTIP=           Cleared all states
 SPEEDRUN_TOOL_NOT_SAVED_STATE_TOOLTIP=     Not saved state yet
 SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD=  No Pop-up Message after Save Load
 SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD_DESCRIPTION=It only applies to "Save State", "Load State" hotkeys.
+SPEEDRUN_TOOL_ALLOW_SAVE_DURING_DEATH=     Allow Save during Death
 SPEEDRUN_TOOL_CLEAR_STATE_DIALOG=
     [MADELINE left normal]
     Cleared the state~
@@ -133,6 +134,7 @@ SPEEDRUN_TOOL_SAVE_TO_NEXT_SLOT=             Save to Next Available Slot
 SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT=           Load from Last Available Slot
 SPEEDRUN_TOOL_SWItCH_TO_NEXT_SLOT=           Switch to Next Slot
 SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT=       Switch to Previous Slot
+
 SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI=           Toggle SaveLoad UI
 
 # ================================== Death Statistics ==================================

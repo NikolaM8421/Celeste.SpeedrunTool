@@ -68,6 +68,7 @@ public class SpeedrunToolSettings : EverestModuleSettings {
 
     public bool SaveInLuaCutscene { get; set; } = false;
     public bool NoMessageAfterSaveLoad { get; set; } = false;
+    public bool AllowSaveDuringDeath { get; set; } = false;
 
     #endregion
 
@@ -183,6 +184,7 @@ public class SpeedrunToolSettings : EverestModuleSettings {
     public List<Buttons> ControllerLoadFromLastSlot { get; set; } = new List<Buttons>();
 
     public List<Buttons> ControllerToggleSaveLoadUI { get; set; } = new List<Buttons>();
+
 
 
     #endregion HotkeyConfig

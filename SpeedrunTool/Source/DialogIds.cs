@@ -70,6 +70,7 @@ public static class DialogIds {
     public const string NotSavedStateYetDialogBadeline = "SPEEDRUN_TOOL_NOT_SAVED_STATE_YET_DIALOG_BADELINE";
     public const string NoMessageAfterSaveLoad = "SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD";
     public const string NoMessageAfterSaveLoadDescription = "SPEEDRUN_TOOL_NO_MESSAGE_AFTER_SAVE_LOAD_DESCRIPTION";
+    public const string AllowSaveDuringDeath = "SPEEDRUN_TOOL_ALLOW_SAVE_DURING_DEATH";
 
     // End Point Style
     public const string Flag = "SPEEDRUN_TOOL_FLAG";
@@ -131,6 +132,7 @@ public static class DialogIds {
     public const string LoadFromLastSlot = "SPEEDRUN_TOOL_LOAD_FROM_LAST_SLOT";
     public const string SwitchToNextSlot = "SPEEDRUN_TOOL_SWITCH_TO_NEXT_SLOT";
     public const string SwitchToPreviousSlot = "SPEEDRUN_TOOL_SWITCH_TO_PREVIOUS_SLOT";
+
     public const string ToggleSaveLoadUI = "SPEEDRUN_TOOL_TOGGLE_SAVE_LOAD_UI";
 
     // Death Statistics

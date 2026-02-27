@@ -173,6 +173,9 @@ public static class SpeedrunToolMenu {
                 ModSettings.NoMessageAfterSaveLoad = b));
             AddDescription(noMessageAfterSaveLoad, subMenu, menu, Dialog.Clean(DialogIds.NoMessageAfterSaveLoadDescription));
 
+            subMenu.Add(new TextMenu.OnOff(Dialog.Clean(DialogIds.MuteInBackground), ModSettings.MuteInBackground).Change(b =>
+                ModSettings.MuteInBackground = b));
+
         });
     }
 
@@ -321,6 +324,7 @@ internal class EaseInSubMenu : TextMenuExt.SubMenu {
         if (outline) {
             icon.DrawOutlineCentered(position + justify, color, scale);
         }
+
         else {
             icon.DrawCentered(position + justify, color, scale);
         }

@@ -616,10 +616,10 @@ public sealed class StateManager {
             failReason = "Cannot Save while Level is Paused!";
             return false;
         }
-        if (level.IsPlayerDead()) {
+        /* if (level.IsPlayerDead()) {
             failReason = "Cannot Save while Player is Dead!";
             return false;
-        }
+        } */
         if (level.SkippingCutscene) {
             failReason = "Cannot Save while Skipping Cutscene!";
             return false;

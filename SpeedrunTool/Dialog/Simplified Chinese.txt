@@ -70,6 +70,7 @@ SPEEDRUN_TOOL_CLEAR_STATE_DIALOG_BADELINE=
 SPEEDRUN_TOOL_NOT_SAVED_STATE_YET_DIALOG_BADELINE=
     [BADELINE left yell]
     还没保存状态！
+SPEEDRUN_TOOL_ALLOW_STATE_DURING_DEATH=    允许死亡时状态
 
 # ================================== End Point Style ==================================
 SPEEDRUN_TOOL_FLAG=      Flag

@@ -68,6 +68,7 @@ public class SpeedrunToolSettings : EverestModuleSettings {
 
     public bool SaveInLuaCutscene { get; set; } = false;
     public bool NoMessageAfterSaveLoad { get; set; } = false;
+    public bool AllowStateDuringDeath { get; set; } = false;
 
     #endregion
 

@@ -173,6 +173,9 @@ public static class SpeedrunToolMenu {
                 ModSettings.NoMessageAfterSaveLoad = b));
             AddDescription(noMessageAfterSaveLoad, subMenu, menu, Dialog.Clean(DialogIds.NoMessageAfterSaveLoadDescription));
 
+            subMenu.Add(new TextMenu.OnOff(Dialog.Clean(DialogIds.AllowStateDuringDeath), ModSettings.AllowStateDuringDeath).Change(b =>
+                ModSettings.AllowStateDuringDeath = b));
+
         });
     }
 
